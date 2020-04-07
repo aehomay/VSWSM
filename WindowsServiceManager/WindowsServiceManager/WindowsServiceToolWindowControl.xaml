@@ -14,11 +14,17 @@
     </UserControl.Resources>
     
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">Windows Service Manager</TextBlock>
             <TextBox Name="txtSearch" Margin="0" HorizontalAlignment="Stretch" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
-        <DockPanel Margin="00,55,0,40">
+        <DockPanel Grid.Row="1">
             <ListView Name="ServiceListView" ItemsSource="{Binding Path=WindowsServiceCollectionView}" 
                       VerticalContentAlignment="Stretch"  HorizontalAlignment="Stretch"
                       ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -43,7 +49,8 @@
                 </ListView.View>
             </ListView>
         </DockPanel>
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch"/>
+        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
             <TextBlock Text="Exception:"/>
             <TextBox Foreground="Red" Text="{Binding ExceptionText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
         </StackPanel>

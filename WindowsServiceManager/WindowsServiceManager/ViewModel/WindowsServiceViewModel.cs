@@ -29,7 +29,6 @@ namespace WindowsServiceManager.ViewModel
                 OnPropertyChanged(nameof(FilterText));
             }
         }
-
         public string ExceptionText
         {
             get => _exceptionText;

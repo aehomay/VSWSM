@@ -5,12 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace WindowsServiceManager.ViewModel
 {
-    public class WindowsServiceInfoViewModel : ViewModel
+    public class WindowsServiceViewModel : ViewModel
     {
         private string _filterText = string.Empty;
         private string _exceptionText = string.Empty;
@@ -38,12 +39,13 @@ namespace WindowsServiceManager.ViewModel
                 OnPropertyChanged(nameof(ExceptionText));
             }
         }
-        public WindowsServiceInfoViewModel()
+        public WindowsServiceViewModel()
         {
             FilteredItems = new List<WindowsServiceInfo>();
             _windowsServiceInfos = new ObservableCollection<WindowsServiceInfo>();
             _windowsServiceCollection = new CollectionViewSource();
             _windowsServiceCollection.Filter += WindowsServiceCollectionFilter;
+            Refresh();
         }
 
         private void WindowsServiceCollectionFilter(object sender, FilterEventArgs e)
@@ -99,5 +101,25 @@ namespace WindowsServiceManager.ViewModel
             OnPropertyChanged(nameof(WindowsServiceCollectionView));
         }
 
+        private void Refresh()
+        {
+            new Task(() =>
+            {
+                while (true)
+                {
+                    var services = FilteredItems;
+                    foreach (var service in services)
+                    {
+                        var controller = ServiceController.GetServices().FirstOrDefault(c => c.ServiceName.ToUpper().Equals(service.ServiceName.ToUpper()));
+                        if (controller != null)
+                        {
+                            service.Status = controller.Status;
+                            WindowsServiceCollectionView.Refresh();
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+            }, TaskCreationOptions.LongRunning).Start();
+        }
     }
 }

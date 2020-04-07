@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using Task = System.Threading.Tasks.Task;
 
-namespace WindowsServiceManager
+namespace WindowsServiceManager.View
 {
 	/// <summary>
 	/// This is the class that implements the package exposed by this assembly.

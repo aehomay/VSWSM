@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WindowsServiceManager.ViewModel;
 
-namespace WindowsServiceManager
+namespace WindowsServiceManager.View
 {
     /// <summary>
     /// Interaction logic for EventManagerWindow.xaml

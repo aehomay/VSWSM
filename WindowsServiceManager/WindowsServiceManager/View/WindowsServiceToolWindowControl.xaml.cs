@@ -1,4 +1,4 @@
-﻿namespace WindowsServiceManager
+﻿namespace WindowsServiceManager.View
 {
     using System;
     using System.Collections;
@@ -16,6 +16,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Threading;
+    using WindowsServiceManager.View;
     using WindowsServiceManager.ViewModel;
 
     /// <summary>
@@ -26,7 +27,7 @@
         const string LOG_FILE_NAME = "WindowsServiceManager.log";
         const int TIME_OUT_IN_MINUTE = 1;
         private Logger logger = null;
-        readonly WindowsServiceInfoViewModel ServiceInfoViewModel = new WindowsServiceInfoViewModel();
+        readonly WindowsServiceViewModel ServiceInfoViewModel = new WindowsServiceViewModel();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsServiceToolWindowControl"/> class.
@@ -71,7 +72,6 @@
             logger = new Logger(path, LOG_FILE_NAME);
             this.DataContext = ServiceInfoViewModel;
             BindWindowsServices();
-            Refresh();
         }
 
         private void BindWindowsServices()
@@ -96,30 +96,6 @@
             {
                 logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(ex.Message);
             }
-        }
-        
-        private void Refresh()
-        {
-            new Task(() =>
-            {
-                while (true)
-                {
-                    var services = ServiceInfoViewModel.FilteredItems;
-                    Dispatcher.Invoke(() =>
-                    {
-                        foreach (var service in services)
-                        {
-                            var controller = ServiceController.GetServices().FirstOrDefault(c => c.ServiceName.ToUpper().Equals(service.ServiceName.ToUpper()));
-                            if (controller != null)
-                            {
-                                service.Status = controller.Status;
-                                ServiceInfoViewModel.WindowsServiceCollectionView.Refresh();
-                            }
-                        }
-                    });
-                    Thread.Sleep(1000);
-                }
-            }, TaskCreationOptions.LongRunning).Start();
         }
 
         private IList ResolveSelectedServices(object sender)

@@ -1,4 +1,4 @@
-﻿namespace WindowsServiceManager
+﻿namespace WindowsServiceManager.View
 {
 	using System;
 	using System.ComponentModel.Design;

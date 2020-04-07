@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
-namespace WindowsServiceManager
+namespace WindowsServiceManager.View
 {
 	/// <summary>
 	/// Command handler

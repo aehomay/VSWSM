@@ -24,6 +24,16 @@ namespace WindowsServiceManager
         /// Constructor for <see cref="Logger"/> class which will initialize the logging file and will set the default logging 
         /// level to <see cref="LoggingLevel.Information"/>.
         /// </summary>
+        /// <param name="name">The file name for logging file.</param>
+        /// <exception cref="DirectoryNotFoundException">Throw if the directory is not valid.</exception>
+        public Logger(string name) : this(Environment.CurrentDirectory, name)
+        { 
+        }
+
+        /// <summary>
+        /// Constructor for <see cref="Logger"/> class which will initialize the logging file and will set the default logging 
+        /// level to <see cref="LoggingLevel.Information"/>.
+        /// </summary>
         /// <param name="directory">The directory for logging file.</param>
         /// <param name="name">The file name for logging file.</param>
         /// <exception cref="DirectoryNotFoundException">Throw if the directory is not valid.</exception>
@@ -37,6 +47,10 @@ namespace WindowsServiceManager
                 File.Create(path).Close();
         }
 
+        /// <summary>
+        /// Write log message into the log file.
+        /// </summary>
+        /// <param name="message">The log message in string.</param>
         public void WriteLog(string message)
         {
             using (StreamWriter sw = File.AppendText(path))
@@ -46,6 +60,11 @@ namespace WindowsServiceManager
             }
         }
 
+        /// <summary>
+        /// Set the log severity for the log message.
+        /// </summary>
+        /// <param name="level">The log severity.</param>
+        /// <returns></returns>
         public Logger SetLogLevel(LoggingLevel level)
         {
             loggingLevel = level;

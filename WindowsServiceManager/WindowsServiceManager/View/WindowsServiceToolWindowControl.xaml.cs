@@ -17,16 +17,13 @@
     using System.Windows.Controls;
     using System.Windows.Threading;
     using WindowsServiceManager.View;
-    using WindowsServiceManager.ViewModel;
+    using WindowsServiceManager.ViewModels;
 
     /// <summary>
     /// Interaction logic for WindowsServiceToolWindowControl.
     /// </summary>
     public partial class WindowsServiceToolWindowControl : UserControl
     {
-        const string LOG_FILE_NAME = "WindowsServiceManager.log";
-        const int TIME_OUT_IN_MINUTE = 1;
-        private Logger logger = null;
         readonly WindowsServiceViewModel ServiceInfoViewModel = new WindowsServiceViewModel();
 
         /// <summary>
@@ -35,7 +32,7 @@
         public WindowsServiceToolWindowControl()
         {
             this.InitializeComponent();
-            Initialize();
+            this.DataContext = ServiceInfoViewModel;
         }
 
         #region Events
@@ -48,13 +45,13 @@
         {
             var services = ResolveSelectedServices(sender);
             var controllers = ToServiceControllers(services);
-            HandleStopServices(controllers.ToArray());
+            ServiceInfoViewModel.HandleStopServices(controllers.ToArray());
         }
         private void MenuItemStart_Click(object sender, RoutedEventArgs e)
         {
             var services = ResolveSelectedServices(sender);
             var controllers = ToServiceControllers(services);
-            HandleStartServices(controllers.ToArray());
+            ServiceInfoViewModel.HandleStartServices(controllers.ToArray());
         }
         private void ListViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -66,38 +63,7 @@
         #endregion
 
         #region Private Methods
-        private void Initialize()
-        {
-            var path = Environment.CurrentDirectory;
-            logger = new Logger(path, LOG_FILE_NAME);
-            this.DataContext = ServiceInfoViewModel;
-            BindWindowsServices();
-        }
-
-        private void BindWindowsServices()
-        {
-            // Display the list of services currently running on this computer.
-            try
-            {
-                ServiceInfoViewModel.Clear();
-                var controllers = ServiceController.GetServices();
-                foreach (ServiceController controller in controllers)
-                    ServiceInfoViewModel.AddServiceInfo(new WindowsServiceInfo
-                    {
-                        ServiceName = controller.ServiceName,
-                        ServiceType = controller.ServiceType,
-                        Status = controller.Status,
-                        DisplayName = controller.DisplayName,
-                        MachineName = controller.MachineName
-                    });
-                ServiceInfoViewModel.UpdateInternalCollection();
-            }
-            catch (System.Exception ex)
-            {
-                logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(ex.Message);
-            }
-        }
-
+     
         private IList ResolveSelectedServices(object sender)
         {
             var menuItem = (MenuItem)sender;
@@ -124,72 +90,6 @@
             return result;
         }
 
-        private void HandleStartServices(ServiceController[] serviceController)
-        {
-            ServiceInfoViewModel.ExceptionText = string.Empty;
-            foreach (var controller in serviceController)
-            {
-                new Task(() =>
-                  {
-                      try
-                      {
-                          controller.Refresh();
-                          if (controller.Status == ServiceControllerStatus.Stopped)
-                          {
-                              controller.Start();
-                          }
-                      }
-                      catch (Exception ex)
-                      {
-                          ServiceInfoViewModel.ExceptionText = $"Failed starting service {controller.ServiceName}. " +
-                              $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
-                          logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(ServiceInfoViewModel.ExceptionText);
-                      }
-                  }).Start();
-            }
-        }
-
-        private void HandleStopServices(ServiceController[] controllers)
-        {
-            ServiceInfoViewModel.ExceptionText = string.Empty;
-            var sorted = DependencySorter(controllers).ToList();
-            foreach (var controller in sorted)
-            {
-                if (controller.Status == ServiceControllerStatus.Running)
-                {
-                    try
-                    {
-                        if (controller.CanStop)
-                        {
-                            controller.Stop();
-                            controller.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
-                        }
-                    }
-                    catch (System.ServiceProcess.TimeoutException)
-                    {
-                        ServiceInfoViewModel.ExceptionText = $"Time-out of {TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE)} minutes has arrived for the Service {controller.ServiceName} " +
-                            $"with service stop request.";
-                        logger.SetLogLevel(Logger.LoggingLevel.Warning).WriteLog(ServiceInfoViewModel.ExceptionText);
-                    }
-                    catch (Exception ex)
-                    {
-                        ServiceInfoViewModel.ExceptionText = $"Exception happed during the service stop request. " +
-                            $"Exception: {ex.Message} InnerException: {ex.InnerException}";
-                        logger.SetLogLevel(Logger.LoggingLevel.Critical).WriteLog(ServiceInfoViewModel.ExceptionText);
-                    }
-                }
-            }
-        }
-
-        private IEnumerable<ServiceController> DependencySorter(ServiceController[] controllers)
-        {
-            foreach (var controller in controllers)
-            {
-                if (controller.DependentServices.Length > 0)
-                    DependencySorter(controller.DependentServices);
-                yield return controller;
-            }
-        }
 
         #endregion
     }

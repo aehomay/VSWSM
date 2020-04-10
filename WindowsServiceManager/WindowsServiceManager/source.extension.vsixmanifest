@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="WindowsServiceManager.acb0e5cc-1e64-49c5-954b-697b824f2cb4" Version="1.0" Language="en-US" Publisher="Aydin Homay" />
+        <Identity Id="WindowsServiceManager.acb0e5cc-1e64-49c5-954b-697b824f2cb4" Version="1.1" Language="en-US" Publisher="Aydin Homay" />
         <DisplayName>Windows Service Manager</DisplayName>
         <Description xml:space="preserve">An extension for Visual Studio to manage windows services directly from the inside of Visual Studio IDE. </Description>
     </Metadata>

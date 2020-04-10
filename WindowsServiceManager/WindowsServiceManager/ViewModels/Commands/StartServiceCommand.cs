@@ -4,43 +4,54 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
-    public class StartServiceCommand
+    public class StartServiceCommand : BaseCommand
     {
-        public ServiceController[] Controllers { get;private set; }
+        const int TIME_OUT_IN_MINUTE = 1;
 
-        private readonly WindowsServiceViewModel vM;
-        public StartServiceCommand(WindowsServiceViewModel viewModel)
+        public StartServiceCommand(WindowsServiceViewModel vm) : base(vm)
         {
-            vM = viewModel;
         }
 
-        public void StartServices(ServiceController[] controllers)
+        public override void Execute()
         {
-            Controllers = controllers;
-            vM.ExceptionText = string.Empty;
+            ViewMode.ExceptionText = string.Empty;
+            var tasks = new List<Task>();
             foreach (var controller in Controllers)
-            {
-                new Task(() =>
+            {//TODO: Work on the warnnings related to creation of tasks
+                tasks.Add(Task.Factory.StartNew(() =>
                 {
                     try
                     {
-                        controller.Refresh();
-                        if (controller.Status == ServiceControllerStatus.Stopped)
+                        controller.Value.Refresh();
+                        if (controller.Value.Status == ServiceControllerStatus.Stopped)
                         {
-                            controller.Start();
+                            controller.Value.Start();
+                            controller.Value.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
                         }
                     }
                     catch (Exception ex)
                     {
-                        vM.ExceptionText = $"Failed starting service {controller.ServiceName}. " +
+                        ViewMode.ExceptionText = $"Failed starting service {controller.Value.ServiceName}. " +
                             $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
-                        vM.Logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(vM.ExceptionText);
+                        ViewMode.Logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(ViewMode.ExceptionText);
                     }
-                }, TaskCreationOptions.RunContinuationsAsynchronously).Start();
+                }, TaskCreationOptions.RunContinuationsAsynchronously).ContinueWith((x) => { controller.Key.Status = controller.Value.Status; }));
             }
+
+            Task.WaitAll(tasks.ToArray());
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lock (this)
+                {
+                    ViewMode.WindowsServiceCollectionView.Refresh();
+                }
+            });
         }
+
     }
 }

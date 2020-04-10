@@ -3,21 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:custom="clr-namespace:WindowsServiceManager.ViewModels.Behaviours"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
-
-    <UserControl.Resources>
-        <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
-            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-        </Style>
-    </UserControl.Resources>
-
-    <i:Interaction.Behaviors>
-        <custom:MultiSelectBehavior SelectedItems="{Binding SelectedItems,Mode=TwoWay}"/>
-    </i:Interaction.Behaviors>
 
     <Grid>
         <StackPanel Orientation="Vertical">
@@ -27,22 +16,22 @@
         <DockPanel Margin="00,55,0,40">
             <ListView Name="ServiceListView" ItemsSource="{Binding Path=WindowsServiceCollectionView}" 
                       VerticalContentAlignment="Stretch"  HorizontalAlignment="Stretch"
-                      SelectionMode="Multiple"
                       ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.HorizontalScrollBarVisibility="Visible"
                       ScrollViewer.CanContentScroll="True"
-                      ScrollViewer.PanningMode="Both">
-                
-                <i:Interaction.Behaviors>
-                    <custom:MultiSelectBehavior SelectedItems="{Binding SelectedItems, Mode=TwoWay}"/>
-                </i:Interaction.Behaviors>
-                
-                <!--ItemContainerStyle="{StaticResource itemstyle}"-->
-                <!--<ListView.Items custom:MouseBehaviour.MouseRightButtonDownCommand="{Binding Path=MouseRightButtonDownCommand}"/>-->
+                      ScrollViewer.PanningMode="Both"
+                      SelectionChanged="ServiceListView_SelectionChanged">
+                <!--ItemContainerStyle="{StaticResource itemstyle}">-->
+
+                <!--<ListViewItem custom:MouseBehaviour.MouseRightButtonDownCommand="{Binding Path=MouseRightButtonDownCommand}"/>-->
 
                 <ListView.Resources>
                     <ContextMenu x:Key="ItemContextMenu">
                         <MenuItem Header="Start" Command="{Binding Path=DataContext.StartServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Stop" Command="{Binding Path=DataContext.StopServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Kill" Command="{Binding Path=DataContext.KillServiceCommand, 
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                     </ContextMenu>
                 </ListView.Resources>
@@ -50,6 +39,7 @@
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}" >
                         <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                     </Style>
                 </ListView.ItemContainerStyle>
 

@@ -6,7 +6,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WindowsServiceManager
+namespace WindowsServiceManager.Model
 {
     /// <summary>
     /// This class represent windows service information.
@@ -42,5 +42,7 @@ namespace WindowsServiceManager
         /// Gets the handle for the service.
         /// </summary>
         public SafeHandle ServiceHandle { get; set; }
+
+ 
     }
 }

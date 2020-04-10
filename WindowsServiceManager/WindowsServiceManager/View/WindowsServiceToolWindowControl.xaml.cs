@@ -16,6 +16,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Threading;
+    using WindowsServiceManager.Model;
     using WindowsServiceManager.View;
     using WindowsServiceManager.ViewModels;
 
@@ -36,61 +37,36 @@
         }
 
         #region Events
-        private void MenuItemKill_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MenuItemStop_Click(object sender, RoutedEventArgs e)
-        {
-            var services = ResolveSelectedServices(sender);
-            var controllers = ToServiceControllers(services);
-            ServiceInfoViewModel.HandleStopServices(controllers.ToArray());
-        }
-        private void MenuItemStart_Click(object sender, RoutedEventArgs e)
-        {
-            var services = ResolveSelectedServices(sender);
-            var controllers = ToServiceControllers(services);
-            ServiceInfoViewModel.HandleStartServices(controllers.ToArray());
-        }
         private void ListViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var serviceInfo = ((ListViewItem)e.Source).Content as WindowsServiceInfo;
             var eventWindow = new EventManagerWindow(serviceInfo.ServiceName);
             eventWindow.ShowDialog();
         }
-
+        private void ServiceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var services = ((ListView)e.Source).SelectedItems;
+            ServiceInfoViewModel.SelectedItems = ToServiceControllers(services);
+        }
         #endregion
 
         #region Private Methods
-     
-        private IList ResolveSelectedServices(object sender)
-        {
-            var menuItem = (MenuItem)sender;
-            var contextMenu = (ContextMenu)menuItem.Parent;
-            var item = (ListView)contextMenu.PlacementTarget;
-            return item.SelectedItems;
-        }
 
-        private List<ServiceController> ToServiceControllers(IList services)
+        private Dictionary<WindowsServiceInfo, ServiceController> ToServiceControllers(IList services)
         {
             var controllers = ServiceController.GetServices();
-            var result = new List<ServiceController>();
-            foreach (var service in services)
+            var result = new Dictionary<WindowsServiceInfo, ServiceController>();
+            foreach (WindowsServiceInfo service in services)
             {
-                var controller = controllers.FirstOrDefault(s => s.ServiceName.ToUpper().Equals(((WindowsServiceInfo)service).ServiceName.ToUpper()));
+                var controller = controllers.FirstOrDefault(s => s.ServiceName.ToUpper().Equals(service.ServiceName.ToUpper()));
                 if (controller != null)
-                    result.Add(controller);
-                else
-                {
-                    ServiceInfoViewModel.RemoveServiceInfo((WindowsServiceInfo)service);
-                    ServiceInfoViewModel.UpdateInternalCollection();
-                }
+                    result.Add(service, controller);
             }
             return result;
         }
 
-
         #endregion
+
+
     }
 }

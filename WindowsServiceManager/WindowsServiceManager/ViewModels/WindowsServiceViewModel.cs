@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,48 +9,74 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using WindowsServiceManager.Model;
 using WindowsServiceManager.ViewModels.Commands;
 
 namespace WindowsServiceManager.ViewModels
 {
     public class WindowsServiceViewModel : ViewModelBase
     {
-        const int TIME_OUT_IN_MINUTE = 1;
-
         private string _filterText = string.Empty;
         private string _exceptionText = string.Empty;
-
         private readonly ObservableCollection<WindowsServiceInfo> windowsServiceInfos = null;
         private readonly CollectionViewSource windowsServiceCollection = null;
 
+        #region Dead Code
         private RelayCommand<object> mouseRightButtonDownCommand;
         public RelayCommand<object> MouseRightButtonDownCommand
         {
             get
             {
-                if (mouseRightButtonDownCommand == null) return mouseRightButtonDownCommand = new RelayCommand<object>(param => ExecuteMouseMove((MouseEventArgs)param));
+                if (mouseRightButtonDownCommand == null) return mouseRightButtonDownCommand =
+                        new RelayCommand<object>(param => OnMouseRightButtonDown((MouseEventArgs)param), (x) => { return true; });
                 return mouseRightButtonDownCommand;
             }
             set { mouseRightButtonDownCommand = value; }
         }
-
-        private void ExecuteMouseMove(MouseEventArgs e)
+        private void OnMouseRightButtonDown(MouseEventArgs e)
         {
-            Console.WriteLine("Mouse Move : " + e.GetPosition((IInputElement)e.Source));
+            var services = ((ListView)e.Source).SelectedItems;
+            SelectedItems = ToServiceControllers(services);
         }
+        #endregion
 
-        public RelayCommand<ServiceController[]> StartServiceCommand
+        public RelayCommand<object> StartServiceCommand
         {
             get
             {
                 var command = new StartServiceCommand(this);
-                return new RelayCommand<ServiceController[]>(x=> command.StartServices(x));
+                return new RelayCommand<object>(x => command.Execute(),
+                (x) => { return command.Controllers != null && command.Controllers.Count > 0 &&
+                    command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Running); });
             }
         }
 
-        public List<object> SelectedItems { get; set; }
+        public RelayCommand<object> StopServiceCommand
+        {
+            get
+            {
+                var command = new StopServiceCommand(this);
+                return new RelayCommand<object>(x => command.Execute(),
+                (x) => { return command.Controllers != null && command.Controllers.Count > 0 &&
+                    command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped); });
+            }
+        }
+
+        public RelayCommand<object> KillServiceCommand
+        {
+            get
+            {
+                var command = new StopServiceCommand(this);
+                return new RelayCommand<object>(x => command.Execute(),
+                (x) => { return command.Controllers != null && command.Controllers.Count > 0 && 
+                    command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped); });
+            }
+        }
+
+        public Dictionary<WindowsServiceInfo, ServiceController> SelectedItems { get; set; }
 
         public List<WindowsServiceInfo> FilteredItems { get; } = null;
         public string FilterText
@@ -89,9 +116,7 @@ namespace WindowsServiceManager.ViewModels
             windowsServiceInfos = new ObservableCollection<WindowsServiceInfo>();
             windowsServiceCollection = new CollectionViewSource();
             windowsServiceCollection.Filter += WindowsServiceCollectionFilter;
-
             BindWindowsServices();
-            Refresh();
         }
 
         private void WindowsServiceCollectionFilter(object sender, FilterEventArgs e)
@@ -117,42 +142,17 @@ namespace WindowsServiceManager.ViewModels
 
         }
 
-        public void RemoveServiceInfo(WindowsServiceInfo serviceInfo)
+        private Dictionary<WindowsServiceInfo, ServiceController> ToServiceControllers(IList services)
         {
-            windowsServiceInfos.Remove(serviceInfo);
-        }
-
-        public void UpdateInternalCollection()
-        {
-            windowsServiceCollection.Source = windowsServiceInfos;
-            OnPropertyChanged(nameof(WindowsServiceCollectionView));
-        }
-
-        private void Refresh()
-        {
-            new Task(() =>
+            var controllers = ServiceController.GetServices();
+            var result = new Dictionary<WindowsServiceInfo, ServiceController>();
+            foreach (WindowsServiceInfo service in services)
             {
-                while (true)
-                {
-                    var services = FilteredItems;
-                    foreach (var service in services)
-                    {
-                        var controller = ServiceController.GetServices().FirstOrDefault(c => c.ServiceName.ToUpper().Equals(service.ServiceName.ToUpper()));
-                        if (controller != null)
-                        {
-                            service.Status = controller.Status;
-                        }
-                    }
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        lock (this)
-                        {
-                            windowsServiceCollection.View.Refresh();
-                        }
-                    });
-                    Thread.Sleep(1000);
-                }
-            }, TaskCreationOptions.LongRunning).Start();
+                var controller = controllers.FirstOrDefault(s => s.ServiceName.ToUpper().Equals(service.ServiceName.ToUpper()));
+                if (controller != null)
+                    result.Add(service, controller);
+            }
+            return result;
         }
 
         private void BindWindowsServices()
@@ -171,7 +171,8 @@ namespace WindowsServiceManager.ViewModels
                         DisplayName = controller.DisplayName,
                         MachineName = controller.MachineName
                     });
-                UpdateInternalCollection();
+                windowsServiceCollection.Source = windowsServiceInfos;
+                OnPropertyChanged(nameof(WindowsServiceCollectionView));
             }
             catch (System.Exception ex)
             {
@@ -179,51 +180,6 @@ namespace WindowsServiceManager.ViewModels
             }
         }
 
-        public void HandleStartServices(ServiceController[] controllers)
-        {
-            StartServiceCommand.Execute(controllers);
-        }
-
-        public void HandleStopServices(ServiceController[] controllers)
-        {
-            ExceptionText = string.Empty;
-            var sorted = DependencyOrder(controllers).ToList();
-            foreach (var controller in sorted)
-            {
-                if (controller.Status == ServiceControllerStatus.Running)
-                {
-                    try
-                    {
-                        if (controller.CanStop)
-                        {
-                            controller.Stop();
-                            controller.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
-                        }
-                    }
-                    catch (System.ServiceProcess.TimeoutException)
-                    {
-                        ExceptionText = $"Time-out of {TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE)} minutes has arrived for the Service {controller.ServiceName} " +
-                            $"with service stop request.";
-                        Logger.SetLogLevel(Logger.LoggingLevel.Warning).WriteLog(ExceptionText);
-                    }
-                    catch (Exception ex)
-                    {
-                        ExceptionText = $"Exception happed during the service stop request. " +
-                            $"Exception: {ex.Message} InnerException: {ex.InnerException}";
-                        Logger.SetLogLevel(Logger.LoggingLevel.Critical).WriteLog(ExceptionText);
-                    }
-                }
-            }
-        }
-
-        private IEnumerable<ServiceController> DependencyOrder(ServiceController[] controllers)
-        {
-            foreach (var controller in controllers)
-            {
-                if (controller.DependentServices.Length > 0)
-                    DependencyOrder(controller.DependentServices);
-                yield return controller;
-            }
-        }
+        
     }
 }

@@ -60,9 +60,5 @@ C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\obj\Debug
 C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\obj\Debug\WindowsServiceManagerTest.pdb
 C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\WindowsServiceManagerTest.dll.config
 C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\GalaSoft.MvvmLight.dll
-C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\CommonServiceLocator.dll
-C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\GalaSoft.MvvmLight.Extras.dll
 C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\GalaSoft.MvvmLight.pdb
 C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\GalaSoft.MvvmLight.xml
-C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\GalaSoft.MvvmLight.Extras.pdb
-C:\Workspace\Git\VSWSM\WindowsServiceManager\WindowsServiceManagerTest\bin\Debug\GalaSoft.MvvmLight.Extras.xml

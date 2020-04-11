@@ -67,8 +67,6 @@
     <Compile Include="ViewModels\Commands\UninstallServiceCommand.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\EventManagerWindow.xaml.cs">
       <DependentUpon>EventManagerWindow.xaml</DependentUpon>
     </Compile>

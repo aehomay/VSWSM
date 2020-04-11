@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -28,9 +29,8 @@ namespace WindowsServiceManager.ViewModels
             get => _filterText;
             set
             {
-                _filterText = value;
+                Set(() => FilterText, ref _filterText, value);
                 _eventCollectionView.View.Refresh();
-                OnPropertyChanged(nameof(FilterText));
             }
         }
 
@@ -39,8 +39,7 @@ namespace WindowsServiceManager.ViewModels
             get => _exceptionText;
             set
             {
-                _exceptionText = value;
-                OnPropertyChanged(nameof(ExceptionText));
+                Set(() => ExceptionText, ref _exceptionText, value);
             }
         }
 
@@ -74,7 +73,7 @@ namespace WindowsServiceManager.ViewModels
         {
             var eventLog = new EventLog(Enum.GetName(typeof(LogType), type));
             _eventCollectionView.Source = eventLog.Entries;
-            OnPropertyChanged(nameof(EventCollectionView));
+            RaisePropertyChanged(nameof(EventCollectionView));
         }
     }
 }

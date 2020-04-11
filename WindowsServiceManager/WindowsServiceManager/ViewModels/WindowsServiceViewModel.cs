@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -84,12 +85,11 @@ namespace WindowsServiceManager.ViewModels
             get => _filterText;
             set
             {
-                _filterText = value;
+                Set(() => FilterText, ref _filterText, value);
                 lock (windowsServiceCollection)
                 {
                     windowsServiceCollection.View.Refresh();
                 }
-                OnPropertyChanged(nameof(FilterText));
             }
         }
         public ICollectionView WindowsServiceCollectionView
@@ -105,8 +105,7 @@ namespace WindowsServiceManager.ViewModels
             get => _exceptionText;
             set
             {
-                _exceptionText = value;
-                OnPropertyChanged(nameof(ExceptionText));
+                Set(() => ExceptionText, ref _exceptionText, value);
             }
         }
 
@@ -172,7 +171,8 @@ namespace WindowsServiceManager.ViewModels
                         MachineName = controller.MachineName
                     });
                 windowsServiceCollection.Source = windowsServiceInfos;
-                OnPropertyChanged(nameof(WindowsServiceCollectionView));
+                RaisePropertyChanged(nameof(WindowsServiceCollectionView));
+                
             }
             catch (Exception ex)
             {

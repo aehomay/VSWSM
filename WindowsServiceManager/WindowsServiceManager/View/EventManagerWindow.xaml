@@ -15,15 +15,32 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical" Grid.Row="0">
-            <TextBlock Text="Search" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <TextBox Name="txtSearch" Margin="0" HorizontalAlignment="Stretch" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <TextBox Name="txtSearch" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock IsHitTestVisible="False" Text="{Binding WatermarkText}" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding FilterText}" Value="" />
+                                    <Condition Binding="{Binding ElementName=txtSearch, Path=IsKeyboardFocused}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
         <DockPanel  Grid.Row="1">
             <ListView Name="ServiceListView" ItemsSource="{Binding Path=EventCollectionView}" 
                       VerticalContentAlignment="Stretch"  HorizontalAlignment="Stretch"

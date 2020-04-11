@@ -20,6 +20,7 @@ namespace WindowsServiceManager.ViewModels
 {
     public class WindowsServiceViewModel : ViewModelBase
     {
+        private string _WatermarkText = null;
         private string _filterText = string.Empty;
         private string _exceptionText = string.Empty;
         private readonly ObservableCollection<WindowsServiceInfo> windowsServiceInfos = null;
@@ -50,8 +51,11 @@ namespace WindowsServiceManager.ViewModels
             {
                 var command = new StartServiceCommand(this);
                 return new RelayCommand<object>(x => command.Execute(),
-                (x) => { return command.Controllers != null && command.Controllers.Count > 0 &&
-                    command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Running); });
+                (x) =>
+                {
+                    return command.Controllers != null && command.Controllers.Count > 0 &&
+               command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Running);
+                });
             }
         }
 
@@ -61,8 +65,11 @@ namespace WindowsServiceManager.ViewModels
             {
                 var command = new StopServiceCommand(this);
                 return new RelayCommand<object>(x => command.Execute(),
-                (x) => { return command.Controllers != null && command.Controllers.Count > 0 &&
-                    command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped); });
+                (x) =>
+                {
+                    return command.Controllers != null && command.Controllers.Count > 0 &&
+               command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped);
+                });
             }
         }
 
@@ -72,8 +79,42 @@ namespace WindowsServiceManager.ViewModels
             {
                 var command = new StopServiceCommand(this);
                 return new RelayCommand<object>(x => command.Execute(),
-                (x) => { return command.Controllers != null && command.Controllers.Count > 0 && 
-                    command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped); });
+                (x) =>
+                {
+                    return command.Controllers != null && command.Controllers.Count > 0 &&
+               command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped);
+                });
+            }
+        }
+
+        public RelayCommand<object> UninstallServiceCommand
+        {
+            get
+            {
+                var command = new UninstallServiceCommand(this);
+                return new RelayCommand<object>(x => command.Execute(),
+                (x) =>
+                {
+                    return command.Controllers != null && command.Controllers.Count > 0 &&
+               command.Controllers.Any(c => c.Key.Status == ServiceControllerStatus.Running || c.Key.Status == ServiceControllerStatus.Stopped);
+                });
+            }
+        }
+
+        public RelayCommand<object> InstallServiceCommand
+        {
+            get
+            {
+                var command = new InstallServiceCommand(this);
+                return new RelayCommand<object>(x => command.Execute());
+            }
+        }
+
+        public RelayCommand<object> RefreshServiceCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(x => BindWindowsServices());
             }
         }
 
@@ -100,6 +141,21 @@ namespace WindowsServiceManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets and sets the text of the watermark
+        /// </summary>
+        public string WatermarkText
+        {
+            get
+            {
+                if (_WatermarkText == null)
+                { _WatermarkText = string.Empty; }
+
+                return _WatermarkText;
+            }
+            set { Set(() => WatermarkText, ref _WatermarkText, value); }
+        }
+
         public string ExceptionText
         {
             get => _exceptionText;
@@ -111,6 +167,7 @@ namespace WindowsServiceManager.ViewModels
 
         public WindowsServiceViewModel()
         {
+            WatermarkText = "Enter service name to search!";
             FilteredItems = new List<WindowsServiceInfo>();
             windowsServiceInfos = new ObservableCollection<WindowsServiceInfo>();
             windowsServiceCollection = new CollectionViewSource();
@@ -172,7 +229,7 @@ namespace WindowsServiceManager.ViewModels
                     });
                 windowsServiceCollection.Source = windowsServiceInfos;
                 RaisePropertyChanged(nameof(WindowsServiceCollectionView));
-                
+
             }
             catch (Exception ex)
             {
@@ -180,6 +237,6 @@ namespace WindowsServiceManager.ViewModels
             }
         }
 
-        
+
     }
 }

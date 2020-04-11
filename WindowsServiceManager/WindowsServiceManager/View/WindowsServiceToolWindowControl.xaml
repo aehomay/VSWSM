@@ -13,11 +13,30 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Vertical">
-            <TextBox Name="txtSearch" Margin="0" HorizontalAlignment="Stretch" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <TextBox Name="txtSearch" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock IsHitTestVisible="False" Text="{Binding WatermarkText}" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding FilterText}" Value="" />
+                                    <Condition Binding="{Binding ElementName=txtSearch, Path=IsKeyboardFocused}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
         <DockPanel Grid.Row="1">
             <ListView Name="ServiceListView" ItemsSource="{Binding Path=WindowsServiceCollectionView}" 
                       VerticalContentAlignment="Stretch"  HorizontalAlignment="Stretch"
@@ -26,9 +45,6 @@
                       ScrollViewer.CanContentScroll="True"
                       ScrollViewer.PanningMode="Both"
                       SelectionChanged="ServiceListView_SelectionChanged">
-                <!--ItemContainerStyle="{StaticResource itemstyle}">-->
-
-                <!--<ListViewItem custom:MouseBehaviour.MouseRightButtonDownCommand="{Binding Path=MouseRightButtonDownCommand}"/>-->
 
                 <ListView.Resources>
                     <ContextMenu x:Key="ItemContextMenu">
@@ -37,6 +53,12 @@
                         <MenuItem Header="Stop" Command="{Binding Path=DataContext.StopServiceCommand, 
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                         <MenuItem Header="Kill" Command="{Binding Path=DataContext.KillServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Install" Command="{Binding Path=DataContext.InstallServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Uninstall" Command="{Binding Path=DataContext.UninstallServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Refresh" Command="{Binding Path=DataContext.RefreshServiceCommand, 
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                     </ContextMenu>
                 </ListView.Resources>
@@ -59,10 +81,12 @@
             </ListView>
         </DockPanel>
         <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch"/>
-        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+        <Grid Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TextBlock Text="Exception:"/>
-            <TextBox Foreground="Red" Text="{Binding ExceptionText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
-        </StackPanel>
+            <TextBox Foreground="Red" Margin="0,20,0,0" Text="{Binding ExceptionText, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True"
+                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        </Grid>
     </Grid>
 
 </UserControl>

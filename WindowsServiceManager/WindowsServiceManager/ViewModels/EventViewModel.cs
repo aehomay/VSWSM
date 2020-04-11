@@ -21,40 +21,58 @@ namespace WindowsServiceManager.ViewModels
 
     public class EventViewModel : ViewModelBase
     {
-        private readonly CollectionViewSource _eventCollectionView = null;
-        private string _filterText = string.Empty;
-        private string _exceptionText = string.Empty;
+        private string watermarkText = null;
+        private readonly CollectionViewSource eventCollectionView = null;
+        private string filterText = string.Empty;
+        private string exceptionText = string.Empty;
         public string FilterText
         {
-            get => _filterText;
+            get => filterText;
             set
             {
-                Set(() => FilterText, ref _filterText, value);
-                _eventCollectionView.View.Refresh();
+                Set(() => FilterText, ref filterText, value);
+                eventCollectionView.View.Refresh();
             }
         }
 
         public string ExceptionText
         {
-            get => _exceptionText;
+            get => exceptionText;
             set
             {
-                Set(() => ExceptionText, ref _exceptionText, value);
+                Set(() => ExceptionText, ref exceptionText, value);
             }
+        }
+
+
+        /// <summary>
+        /// Gets and sets the text of the watermark
+        /// </summary>
+        public string WatermarkText
+        {
+            get
+            {
+                if (watermarkText == null)
+                { watermarkText = string.Empty; }
+
+                return watermarkText;
+            }
+            set { Set(() => WatermarkText, ref watermarkText, value); }
         }
 
         public ICollectionView EventCollectionView
         {
             get
             {
-                return _eventCollectionView.View;
+                return eventCollectionView.View;
             }
         }
 
         public EventViewModel()
         {
-            _eventCollectionView = new CollectionViewSource();
-            _eventCollectionView.Filter += EventViewSourceFilter;
+            WatermarkText = "Enter service name to search!";
+            eventCollectionView = new CollectionViewSource();
+            eventCollectionView.Filter += EventViewSourceFilter;
             LoadEvents(LogType.Application);
         }
 
@@ -72,7 +90,7 @@ namespace WindowsServiceManager.ViewModels
         public void LoadEvents(LogType type)
         {
             var eventLog = new EventLog(Enum.GetName(typeof(LogType), type));
-            _eventCollectionView.Source = eventLog.Entries;
+            eventCollectionView.Source = eventLog.Entries;
             RaisePropertyChanged(nameof(EventCollectionView));
         }
     }

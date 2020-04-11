@@ -9,8 +9,6 @@ namespace WindowsServiceManager.ViewModels
 {
     public abstract class ViewModelBase: INotifyPropertyChanged
     {
-        public Logger Logger = new Logger("WindowsServiceManager.log");
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

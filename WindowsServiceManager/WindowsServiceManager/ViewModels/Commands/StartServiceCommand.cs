@@ -37,7 +37,6 @@ namespace WindowsServiceManager.ViewModels.Commands
                     {
                         ViewMode.ExceptionText = $"Failed starting service {controller.Value.ServiceName}. " +
                             $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
-                        ViewMode.Logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(ViewMode.ExceptionText);
                     }
                 }, TaskCreationOptions.RunContinuationsAsynchronously).ContinueWith((x) => { controller.Key.Status = controller.Value.Status; }));
             }

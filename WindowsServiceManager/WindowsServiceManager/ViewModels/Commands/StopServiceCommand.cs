@@ -37,7 +37,6 @@ namespace WindowsServiceManager.ViewModels.Commands
                     {
                         ViewMode.ExceptionText = $"Exception happed during the service stop request. " +
                             $"Exception: {ex.Message} InnerException: {ex.InnerException}";
-                        ViewMode.Logger.SetLogLevel(Logger.LoggingLevel.Critical).WriteLog(ViewMode.ExceptionText);
                     }
                 }
             }

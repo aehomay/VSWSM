@@ -23,7 +23,6 @@ namespace WindowsServiceManager.View
     public partial class EventManagerWindow : Window
     {
         const string LOG_FILE_NAME = "WindowsServiceManager.log";
-        private Logger logger = null;
         readonly EventViewModel EventViewModel = new EventViewModel();
         public EventManagerWindow()
         {
@@ -42,7 +41,6 @@ namespace WindowsServiceManager.View
         {
             this.DataContext = EventViewModel;
             var path = Environment.CurrentDirectory;
-            logger = new Logger(path, LOG_FILE_NAME);
         }
 
         private void ListViewItem_Selected(object sender, RoutedEventArgs e)

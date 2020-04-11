@@ -174,9 +174,9 @@ namespace WindowsServiceManager.ViewModels
                 windowsServiceCollection.Source = windowsServiceInfos;
                 OnPropertyChanged(nameof(WindowsServiceCollectionView));
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                Logger.SetLogLevel(Logger.LoggingLevel.Error).WriteLog(ex.Message);
+                ExceptionText = $"An exception happened while binding services. Exception:{ex.Message}";
             }
         }
 

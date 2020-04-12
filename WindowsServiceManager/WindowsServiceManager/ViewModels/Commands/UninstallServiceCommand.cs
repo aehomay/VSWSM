@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
@@ -19,21 +20,25 @@ namespace WindowsServiceManager.ViewModels.Commands
             var installer = new ServiceInstaller();
             var Context = new InstallContext("/LogFile=uninstall.log", null);//TODO: support command arguments as well.
             installer.Context = Context;
-
-            foreach (var controller in Controllers.Values)
+            
+            var confirmation = MessageBox.Show("Are you sure you want to uninstall?", "Uninstall", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            if (confirmation)
             {
-                try
+                foreach (var controller in Controllers.Values)
                 {
-                    installer.ServiceName = controller.ServiceName;
-                    installer.Uninstall(null);
+                    try
+                    {
+                        installer.ServiceName = controller.ServiceName;
+                        installer.Uninstall(null);
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewMode.ExceptionText = $"Failed unstalling service {controller.ServiceName}. " +
+                                $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
+                    }
                 }
-                catch (Exception ex)
-                {
-                    ViewMode.ExceptionText = $"Failed unstalling service {controller.ServiceName}. " +
-                            $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
-                }
+                ViewMode.RefreshServiceCommand.Execute(null);
             }
-            ViewMode.RefreshServiceCommand.Execute(null);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration.Install;
 using System.Linq;
+using System.Security;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,11 +33,17 @@ namespace WindowsServiceManager.ViewModels.Commands
                     installer.Commit(null);
                 }
             }
+            catch (SecurityException ex)
+            {
+                ViewMode.ExceptionText = $"Failed installing service {exeFilename}. " +
+                                $"Exception:{ex.Message}. This could be because of not running the visual studio under admin rights.";
+            }
             catch (Exception ex)
             {
                 ViewMode.ExceptionText = $"Failed installing service {exeFilename}. " +
                                 $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
             }
+            ViewMode.RefreshServiceCommand.Execute(null);
         }
 
         private string OpenFileDialog()

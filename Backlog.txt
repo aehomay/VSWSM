@@ -1,0 +1,4 @@
+1- Support passing command arguments for install command.
+2- Work on the dependency order method to be more elegent in kill and stop commands.
+3- Work on the warnnings related to creation of tasks in service start command.
+4- Change the Exception window to be an output window to show all events by related date and time.

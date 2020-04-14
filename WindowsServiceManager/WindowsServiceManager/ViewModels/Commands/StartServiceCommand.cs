@@ -10,7 +10,6 @@ namespace WindowsServiceManager.ViewModels.Commands
 {
     public class StartServiceCommand : BaseCommand
     {
-        const int TIME_OUT_IN_MINUTE = 1;
 
         public StartServiceCommand(WindowsServiceViewModel vm) : base(vm)
         {
@@ -19,10 +18,9 @@ namespace WindowsServiceManager.ViewModels.Commands
         public override void Execute()
         {
             ViewMode.ExceptionText = string.Empty;
-            var tasks = new List<Task>();
             foreach (var controller in Controllers)
             {//TODO: Work on the warnnings related to creation of tasks
-                tasks.Add(Task.Factory.StartNew(() =>
+                Task.Factory.StartNew(() =>
                 {
                     try
                     {
@@ -30,8 +28,8 @@ namespace WindowsServiceManager.ViewModels.Commands
                         if (controller.Value.Status == ServiceControllerStatus.Stopped)
                         {
                             controller.Value.Start();
-                            Refresh();
-                            controller.Value.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
+                            Refresh();//TODO: Improve this part shouldn`t call this for every service.
+                            controller.Value.WaitForStatus(ServiceControllerStatus.Running);
                         }
                     }
                     catch (Exception ex)
@@ -43,7 +41,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                     {
                         Refresh();
                     }
-                }));
+                });
             }
         }
 

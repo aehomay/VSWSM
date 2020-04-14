@@ -62,7 +62,7 @@
     <Compile Include="ViewModels\Commands\BaseCommand.cs" />
     <Compile Include="ViewModels\Commands\InstallServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\StartServiceCommand.cs" />
-    <Compile Include="ViewModels\Commands\KillServiceCommand.cs" />
+    <Compile Include="ViewModels\Commands\TerminateServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\StopServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\UninstallServiceCommand.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />

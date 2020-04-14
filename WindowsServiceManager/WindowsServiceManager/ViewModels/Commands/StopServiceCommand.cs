@@ -22,30 +22,44 @@ namespace WindowsServiceManager.ViewModels.Commands
             sorted = new List<ServiceController>();
             ViewMode.ExceptionText = string.Empty;
             DependencyOrder(Controllers.Values.ToArray());//TODO: Work on the dependency order method to be more elegent.
-            foreach (var controller in sorted)
+            Task.Factory.StartNew(() =>
             {
-                if (controller.Status == ServiceControllerStatus.Running)
+                foreach (var controller in sorted)
                 {
-                    try
+                    if (controller.Status == ServiceControllerStatus.Running)
                     {
-                        if (controller.CanStop)
+                        try
                         {
-                            controller.Stop();
-                            ViewMode.RefreshServiceCommand.Execute(null);
-                            controller.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
+                            if (controller.CanStop)
+                            {
+                                controller.Stop();
+                                Refresh();//TODO: Improve this part shouldn`t call this for every service.
+                                controller.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ViewMode.ExceptionText = $"Exception happed during the service stop request. " +
+                                $"Exception: {ex.Message} InnerException: {ex.InnerException}";
+                        }
+                        finally
+                        {
+                            Refresh();//TODO: Improve this part shouldn`t call this for every service.
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        ViewMode.ExceptionText = $"Exception happed during the service stop request. " +
-                            $"Exception: {ex.Message} InnerException: {ex.InnerException}";
-                    }
-                    finally
-                    {
-                        ViewMode.RefreshServiceCommand.Execute(null);
-                    }
                 }
-            }
+            });
+        }
+
+        private void Refresh()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lock (this)
+                {
+                    ViewMode.RefreshServiceCommand.Execute(null);
+                }
+            });
         }
 
         private List<ServiceController> DependencyOrder(ServiceController[] controllers)

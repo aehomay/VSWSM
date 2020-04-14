@@ -54,7 +54,7 @@ namespace WindowsServiceManager.ViewModels
                 (x) =>
                 {
                     return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Running);
+               command.Controllers.Any(c => c.Key.Status == ServiceControllerStatus.Stopped);
                 });
             }
         }
@@ -68,7 +68,7 @@ namespace WindowsServiceManager.ViewModels
                 (x) =>
                 {
                     return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Key.Status != ServiceControllerStatus.Stopped);
+               command.Controllers.Any(c => c.Key.Status == ServiceControllerStatus.Running);
                 });
             }
         }
@@ -77,7 +77,7 @@ namespace WindowsServiceManager.ViewModels
         {
             get
             {
-                var command = new StopServiceCommand(this);
+                var command = new TerminateServiceCommand(this);
                 return new RelayCommand<object>(x => command.Execute(),
                 (x) =>
                 {

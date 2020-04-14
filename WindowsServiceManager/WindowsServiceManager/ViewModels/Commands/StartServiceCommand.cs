@@ -30,6 +30,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                         if (controller.Value.Status == ServiceControllerStatus.Stopped)
                         {
                             controller.Value.Start();
+                            Refresh();
                             controller.Value.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
                         }
                     }
@@ -38,19 +39,23 @@ namespace WindowsServiceManager.ViewModels.Commands
                         ViewMode.ExceptionText = $"Failed starting service {controller.Value.ServiceName}. " +
                             $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
                     }
-                }, TaskCreationOptions.RunContinuationsAsynchronously).ContinueWith((x) => { controller.Key.Status = controller.Value.Status; }));
+                    finally
+                    {
+                        Refresh();
+                    }
+                }));
             }
+        }
 
-            Task.WaitAll(tasks.ToArray());
-
+        private void Refresh()
+        {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 lock (this)
                 {
-                    ViewMode.WindowsServiceCollectionView.Refresh();
+                    ViewMode.RefreshServiceCommand.Execute(null);
                 }
             });
         }
-
     }
 }

@@ -58,10 +58,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Utility.cs" />
     <Compile Include="ViewModels\Behaviours\MouseBehaviour.cs" />
     <Compile Include="ViewModels\Commands\BaseCommand.cs" />
     <Compile Include="ViewModels\Commands\InstallServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\StartServiceCommand.cs" />
+    <Compile Include="ViewModels\Commands\AttachToServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\TerminateServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\StopServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\UninstallServiceCommand.cs" />
@@ -80,6 +82,7 @@
       <DependentUpon>WindowsServiceToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WindowsServiceToolWindowPackage.cs" />
+    <Compile Include="VisualStudioAttacher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">

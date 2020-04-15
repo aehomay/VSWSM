@@ -60,6 +60,8 @@
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                         <MenuItem Header="Refresh" Command="{Binding Path=DataContext.RefreshServiceCommand, 
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Attach" Command="{Binding Path=DataContext.AttachToServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                     </ContextMenu>
                 </ListView.Resources>
 

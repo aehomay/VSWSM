@@ -101,6 +101,20 @@ namespace WindowsServiceManager.ViewModels
             }
         }
 
+        public RelayCommand<object> AttachToServiceCommand
+        {
+            get
+            {
+                var command = new AttachToServiceCommand(this);
+                return new RelayCommand<object>(x => command.Execute(),
+                (x) =>
+                {
+                    return command.Controllers != null && command.Controllers.Count > 0 &&
+               command.Controllers.Any(c => c.Key.Status == ServiceControllerStatus.Running);
+                });
+            }
+        }
+
         public RelayCommand<object> InstallServiceCommand
         {
             get

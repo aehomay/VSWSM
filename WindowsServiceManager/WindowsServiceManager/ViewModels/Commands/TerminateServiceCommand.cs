@@ -13,8 +13,6 @@ namespace WindowsServiceManager.ViewModels.Commands
 {
     public class TerminateServiceCommand : BaseCommand
     {
-        const int TIME_OUT_IN_MINUTE = 1;
-
         public TerminateServiceCommand(WindowsServiceViewModel vm) : base(vm)
         {
         }
@@ -50,19 +48,7 @@ namespace WindowsServiceManager.ViewModels.Commands
 
         private void TerminateServiceByProcess(string serviceName)
         {
-            string query = $"SELECT ProcessId FROM Win32_Service WHERE Name='{serviceName}'";
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
-            foreach (ManagementObject obj in searcher.Get())
-            {
-                uint processId = (uint)obj["ProcessId"];
-                Process process = null;
-                process = Process.GetProcessById((int)processId);
-                if (process != null)
-                {
-                    process.Kill();
-                    break;
-                }
-            }
+            Utility.GetProcessByServiceName(serviceName)?.Kill();
         }
 
         private void Refresh()

@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Management;
 
-namespace WindowsServiceManager
+namespace WindowsServiceManager.Helper
 {
     public static class Utility
     {
@@ -20,6 +22,16 @@ namespace WindowsServiceManager
                 }
             }
             return null;
+        }
+
+
+        public static IEnumerable<VisualStudioProcess> GetVisualStudioProcesses()
+        {
+            var processes = Process.GetProcesses().Where(o => o.ProcessName.Contains("devenv"));
+            foreach (var process in processes)
+            {
+                yield return new VisualStudioProcess(process);
+            }
         }
     }
 }

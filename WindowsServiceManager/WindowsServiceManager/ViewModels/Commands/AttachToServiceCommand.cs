@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using WindowsServiceManager.Helper;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
@@ -22,8 +23,8 @@ namespace WindowsServiceManager.ViewModels.Commands
            ViewMode.ExceptionText = string.Empty;
             var service = Controllers.Keys.FirstOrDefault().ServiceName;
             var svProcess = Utility.GetProcessByServiceName(service);
-            var vsProcess = VisualStudioAttacher.GetVisualStudioForSolution("Clients.sln");
-            VisualStudioAttacher.AttachVisualStudioToProcess(vsProcess, svProcess);
+            var vs = Utility.GetVisualStudioProcesses().ToList();
+
         }
 
              

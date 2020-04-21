@@ -58,7 +58,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Utility.cs" />
+    <Compile Include="Helper\Utility.cs" />
+    <Compile Include="Helper\VisualStudioProcess.cs" />
     <Compile Include="ViewModels\Behaviours\MouseBehaviour.cs" />
     <Compile Include="ViewModels\Commands\BaseCommand.cs" />
     <Compile Include="ViewModels\Commands\InstallServiceCommand.cs" />
@@ -82,7 +83,6 @@
       <DependentUpon>WindowsServiceToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WindowsServiceToolWindowPackage.cs" />
-    <Compile Include="VisualStudioAttacher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">

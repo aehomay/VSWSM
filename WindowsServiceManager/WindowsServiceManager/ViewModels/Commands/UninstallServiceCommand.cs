@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration.Install;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                     {
                         installer.ServiceName = controller.ServiceName;
                         installer.Uninstall(null);
+                        MessageBox.Show($"The {controller.ServiceName} service has unstalled successfully.");
                     }
                     catch (Exception ex)
                     {

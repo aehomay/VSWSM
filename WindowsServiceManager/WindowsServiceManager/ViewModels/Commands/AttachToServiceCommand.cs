@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using WindowsServiceManager.Helper;
+using WindowsServiceManager.View;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
@@ -20,13 +21,25 @@ namespace WindowsServiceManager.ViewModels.Commands
 
         public override void Execute()
         {
-           ViewMode.ExceptionText = string.Empty;
-            var service = Controllers.Keys.FirstOrDefault().ServiceName;
-            var svProcess = Utility.GetProcessByServiceName(service);
-            var vs = Utility.GetVisualStudioProcesses().ToList();
-
+            try
+            {
+                ViewMode.ExceptionText = string.Empty;
+                var service = Controllers.Keys.FirstOrDefault().ServiceName;
+                var svProcess = Utility.GetProcessByServiceName(service);
+                var window = new VisualStudioProcessWindow
+                {
+                    VisualStudioProcesses = Utility.GetVisualStudioProcesses().Where(vs => !string.IsNullOrEmpty(vs.SolutionName))
+                };
+                window.ShowDialog();
+                var vsProcess = window.SelectedVisualStudioProcess;
+                vsProcess.AttachToProcess(svProcess);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-             
+
     }
 }

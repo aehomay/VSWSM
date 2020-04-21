@@ -25,16 +25,26 @@ namespace WindowsServiceManager.Helper
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetFocus(IntPtr hWnd);
         public System.Diagnostics.Process Process { get; private set; }
 
         public _DTE Instance { get; private set; }
 
-        public string SolutionName 
+        public string SolutionPath 
         {
             get
             {
                 return Instance?.Solution.FullName;
             } 
+        }
+
+        public string SolutionName
+        {
+            get
+            {
+                return Instance?.Solution.FullName.Split('\\').Last();
+            }
         }
 
         public VisualStudioProcess(System.Diagnostics.Process process)
@@ -70,6 +80,7 @@ namespace WindowsServiceManager.Helper
                 processToAttachTo.Attach();
                 ShowWindow((int)Process.MainWindowHandle, 3);
                 SetForegroundWindow(Process.MainWindowHandle);
+                SetFocus(Process.MainWindowHandle);
             }
         }
 

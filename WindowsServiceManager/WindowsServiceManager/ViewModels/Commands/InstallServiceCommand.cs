@@ -31,6 +31,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                     };
                     installer.Install(null);
                     installer.Commit(null);
+                    MessageBox.Show($"The {exeFilename} has installed as a Windows service successfully.");
                 }
             }
             catch (SecurityException ex)

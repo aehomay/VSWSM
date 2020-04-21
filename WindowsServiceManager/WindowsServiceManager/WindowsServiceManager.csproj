@@ -77,6 +77,9 @@
     <Compile Include="Model\WindowsServiceInfo.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WindowsServiceViewModel.cs" />
+    <Compile Include="View\VisualStudioProcessWindow.xaml.cs">
+      <DependentUpon>VisualStudioProcessWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WindowsServiceToolWindow.cs" />
     <Compile Include="View\WindowsServiceToolWindowCommand.cs" />
     <Compile Include="View\WindowsServiceToolWindowControl.xaml.cs">
@@ -220,6 +223,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="View\EventManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VisualStudioProcessWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

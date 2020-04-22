@@ -32,7 +32,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                 };
                 window.ShowDialog();
                 var vsProcess = window.SelectedVisualStudioProcess;
-                vsProcess.AttachToProcess(svProcess);
+                vsProcess?.AttachToProcess(svProcess);
             }
             catch (Exception ex)
             {

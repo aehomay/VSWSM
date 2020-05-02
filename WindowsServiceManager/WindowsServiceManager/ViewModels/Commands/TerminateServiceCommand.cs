@@ -21,8 +21,8 @@ namespace WindowsServiceManager.ViewModels.Commands
         public override void Execute()
         {
             ViewMode.ExceptionText = string.Empty;
-            var sorted = DependencyOrder(Controllers.Values.ToArray());//TODO: Work on the dependency order method to be more elegent.
-            Task.Factory.StartNew(() =>
+            var sorted = DependencyOrder(Controllers.ToArray());//TODO: Work on the dependency order method to be more elegent.
+            _ = Task.Factory.StartNew(() =>
             {
                 foreach (var controller in sorted)
                 {
@@ -38,13 +38,9 @@ namespace WindowsServiceManager.ViewModels.Commands
                             ViewMode.ExceptionText = $"Exception happed during the service stop request. " +
                                 $"Exception: {ex.Message} InnerException: {ex.InnerException}";
                         }
-                        finally
-                        {
-                           Refresh();//TODO: Improve this part shouldn`t call this for every service.
-                        }
                     }
                 }
-            });
+            }, new CancellationToken(), TaskCreationOptions.None, TaskScheduler.Default);
         }
 
         private void TerminateServiceByProcess(string serviceName)

@@ -24,7 +24,7 @@ namespace WindowsServiceManager.ViewModels.Commands
             try
             {
                 ViewMode.ExceptionText = string.Empty;
-                var service = Controllers.Keys.FirstOrDefault().ServiceName;
+                var service = Controllers.FirstOrDefault().ServiceName;
                 var svProcess = Utility.GetProcessByServiceName(service);
                 var window = new VisualStudioProcessWindow
                 {

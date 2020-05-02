@@ -33,6 +33,8 @@ namespace WindowsServiceManager.Model
         /// </summary>
         public ServiceControllerStatus Status { get; set; }
 
+        public ServiceController Controller { get; private set; }
+
         /// <summary>
         /// Gets the type of service that this object references.
         /// </summary>

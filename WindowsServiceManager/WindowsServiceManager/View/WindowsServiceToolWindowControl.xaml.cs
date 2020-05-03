@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Windows.Controls;
+using WindowsServiceManager.ViewModel;
 using WindowsServiceManager.ViewModels;
 
 namespace WindowsServiceManager.View
@@ -24,17 +25,17 @@ namespace WindowsServiceManager.View
         #region Events
         private void ListViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var serviceInfo = ((ListViewItem)e.Source).Content as ServiceController;
+            var serviceInfo = ((ListViewItem)e.Source).Content as ServiceControllerViewModel;
             var eventWindow = new EventManagerWindow(serviceInfo.ServiceName);
             eventWindow.ShowDialog();
         }
         private void ServiceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ServiceInfoViewModel.SelectedItems = new List<ServiceController>();
+            ServiceInfoViewModel.SelectedItems = new List<ServiceControllerViewModel>();
             var services = ((ListView)e.Source).SelectedItems;
             foreach (var service in services)
             {
-                ServiceInfoViewModel.SelectedItems.Add((ServiceController)service);
+                ServiceInfoViewModel.SelectedItems.Add((ServiceControllerViewModel)service);
             }            
         }
 

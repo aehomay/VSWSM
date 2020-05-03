@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using WindowsServiceManager.ViewModel;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
@@ -11,7 +12,7 @@ namespace WindowsServiceManager.ViewModels.Commands
     {
         protected readonly WindowsServiceViewModel ViewMode;
 
-        public List<ServiceController> Controllers
+        public List<ServiceControllerViewModel> Controllers
         {
             get
             {

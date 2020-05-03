@@ -19,22 +19,18 @@ namespace WindowsServiceManager.ViewModels.Commands
 
         public override void Execute()
         {
-            sorted = new List<ServiceController>();
             ViewMode.ExceptionText = string.Empty;
-            DependencyOrder(Controllers.ToArray());//TODO: Work on the dependency order method to be more elegent.
             _ = Task.Factory.StartNew(() =>
              {
-                 foreach (var controller in sorted)
+                 foreach (var controller in Controllers)
                  {
                      if (controller.Status == ServiceControllerStatus.Running)
                      {
                          try
                          {
-                             if (controller.CanStop)
+                             if (controller.Controller.CanStop)
                              {
-                                 controller.Stop();
-                                //Refresh();//TODO: Improve this part shouldn`t call this for every service.
-                                controller.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(TIME_OUT_IN_MINUTE));
+                                 controller.Controller.Stop();
                              }
                          }
                          catch (Exception ex)
@@ -45,31 +41,6 @@ namespace WindowsServiceManager.ViewModels.Commands
                      }
                  }
              }, new CancellationToken(), TaskCreationOptions.None, TaskScheduler.Default);
-        }
-
-        private void Refresh()
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                lock (this)
-                {
-                    ViewMode.RefreshServiceCommand.Execute(null);
-                }
-            });
-        }
-
-        private List<ServiceController> DependencyOrder(ServiceController[] controllers)
-        {
-            foreach (var controller in controllers)
-            {
-                if (controller.DependentServices.Length > 0)
-                {
-                    DependencyOrder(controller.DependentServices);
-                }
-                if (!sorted.Exists(c => c.ServiceName.ToUpper().Equals(controller.ServiceName.ToUpper())))
-                    sorted.Add(controller);
-            }
-            return sorted;
         }
     }
 }

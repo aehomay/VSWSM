@@ -25,11 +25,9 @@ namespace WindowsServiceManager.ViewModels.Commands
                 {
                     try
                     {
-                        controller.Refresh();
                         if (controller.Status == ServiceControllerStatus.Stopped)
                         {
-                            controller.Start();
-                            controller.WaitForStatus(ServiceControllerStatus.Running);
+                            controller.Controller.Start();
                         }
                     }
                     catch (Exception ex)

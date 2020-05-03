@@ -21,10 +21,9 @@ namespace WindowsServiceManager.ViewModels.Commands
         public override void Execute()
         {
             ViewMode.ExceptionText = string.Empty;
-            var sorted = DependencyOrder(Controllers.ToArray());//TODO: Work on the dependency order method to be more elegent.
             _ = Task.Factory.StartNew(() =>
             {
-                foreach (var controller in sorted)
+                foreach (var controller in Controllers)
                 {
                     if (controller.Status == ServiceControllerStatus.Running || controller.Status == ServiceControllerStatus.StartPending)
                     {
@@ -48,25 +47,5 @@ namespace WindowsServiceManager.ViewModels.Commands
             Utility.GetProcessByServiceName(serviceName)?.Kill();
         }
 
-        private void Refresh()
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                lock (this)
-                {
-                    ViewMode.RefreshServiceCommand.Execute(null);
-                }
-            });
-        }
-
-        private IEnumerable<ServiceController> DependencyOrder(ServiceController[] controllers)
-        {
-            foreach (var controller in controllers)
-            {
-                if (controller.DependentServices.Length > 0)
-                    DependencyOrder(controller.DependentServices);
-                yield return controller;
-            }
-        }
     }
 }

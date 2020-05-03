@@ -58,6 +58,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Helper\PauseTokenSource.cs" />
     <Compile Include="Helper\Utility.cs" />
     <Compile Include="Helper\VisualStudioProcess.cs" />
     <Compile Include="ViewModels\Behaviours\MouseBehaviour.cs" />
@@ -70,11 +71,11 @@
     <Compile Include="ViewModels\Commands\UninstallServiceCommand.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
+    <Compile Include="ViewModels\ServiceControllerViewModel.cs" />
     <Compile Include="View\EventManagerWindow.xaml.cs">
       <DependentUpon>EventManagerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WindowsServiceViewModel.cs" />
     <Compile Include="View\VisualStudioProcessWindow.xaml.cs">
       <DependentUpon>VisualStudioProcessWindow.xaml</DependentUpon>

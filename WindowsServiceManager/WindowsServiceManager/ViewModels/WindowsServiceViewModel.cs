@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using WindowsServiceManager.ViewModel;
 using WindowsServiceManager.ViewModels.Commands;
 
 namespace WindowsServiceManager.ViewModels
@@ -20,7 +21,7 @@ namespace WindowsServiceManager.ViewModels
         private string _WatermarkText = null;
         private string _filterText = string.Empty;
         private string _exceptionText = string.Empty;
-        private ObservableCollection<ServiceController> serviceControllers = null;
+        private ObservableCollection<ServiceControllerViewModel> serviceControllers = null;
         private readonly CollectionViewSource serviceControllerView = null;
 
         #region Dead Code
@@ -38,7 +39,7 @@ namespace WindowsServiceManager.ViewModels
         private void OnMouseRightButtonDown(MouseEventArgs e)
         {
             var services = ((ListView)e.Source).SelectedItems;
-            SelectedItems = (List<ServiceController>)services;
+            SelectedItems = (List<ServiceControllerViewModel>)services;
         }
         #endregion
 
@@ -129,9 +130,9 @@ namespace WindowsServiceManager.ViewModels
             }
         }
 
-        public List<ServiceController> SelectedItems { get; set; }
+        public List<ServiceControllerViewModel> SelectedItems { get; set; }
 
-        public List<ServiceController> FilteredItems { get; } = null;
+        public List<ServiceControllerViewModel> FilteredItems { get; } = null;
 
         public string FilterText
         {
@@ -181,26 +182,10 @@ namespace WindowsServiceManager.ViewModels
         public WindowsServiceViewModel()
         {
             WatermarkText = "Enter service name to search!";
-            FilteredItems = new List<ServiceController>();
+            FilteredItems = new List<ServiceControllerViewModel>();
             serviceControllerView = new CollectionViewSource();
             serviceControllerView.Filter += WindowsServiceCollectionFilter;
             BindWindowsServices();
-            RefreshSrviceStatus();
-        }
-
-        private void RefreshSrviceStatus()
-        {
-            _ = Task.Factory.StartNew(() =>
-             {
-                 while (true)
-                 {
-                     Application.Current.Dispatcher.Invoke(() =>
-                     {
-                         serviceControllerView.View.Refresh();
-                     });
-                     Thread.Sleep(500);
-                 }
-             }, new CancellationToken(), TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private void WindowsServiceCollectionFilter(object sender, FilterEventArgs e)
@@ -211,18 +196,19 @@ namespace WindowsServiceManager.ViewModels
                 e.Accepted = true;
                 return;
             }
-            var wsInfo = e.Item as ServiceController;
-            e.Accepted = (wsInfo.ServiceName.ToUpper().Contains(FilterText.ToUpper())) ? true : false;
+            var controller = e.Item as ServiceControllerViewModel;
+            e.Accepted = (controller.ServiceName.ToUpper().Contains(FilterText.ToUpper())) ? true : false;
             if (e.Accepted)
             {
-                if (!FilteredItems.Exists(i => i.ServiceName.ToUpper().Equals(wsInfo.ServiceName.ToUpper())))
-                    FilteredItems.Add(wsInfo);
+                if (!FilteredItems.Exists(i => i.ServiceName.ToUpper().Equals(controller.ServiceName.ToUpper())))
+                    FilteredItems.Add(controller);
             }
             else
             {
-                if (FilteredItems.Exists(i => i.ServiceName.ToUpper().Equals(wsInfo.ServiceName.ToUpper())))
-                    FilteredItems.Remove(wsInfo);
+                if (FilteredItems.Exists(i => i.ServiceName.ToUpper().Equals(controller.ServiceName.ToUpper())))
+                    FilteredItems.Remove(controller);
             }
+             controller.Visiable = e.Accepted;
         }
 
         private void BindWindowsServices()
@@ -231,7 +217,8 @@ namespace WindowsServiceManager.ViewModels
             try
             {
                 var controllers = ServiceController.GetServices();
-                serviceControllers = new ObservableCollection<ServiceController>(controllers);
+                serviceControllers = new ObservableCollection<ServiceControllerViewModel>();
+                controllers.ToList().ForEach(c => serviceControllers.Add(new ServiceControllerViewModel(c)));
                 serviceControllerView.Source = serviceControllers;
                 RaisePropertyChanged(nameof(WindowsServiceCollectionView));
             }

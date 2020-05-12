@@ -90,7 +90,9 @@ namespace WindowsServiceManager.ViewModels
         public void LoadEvents(LogType type)
         {
             var eventLog = new EventLog(Enum.GetName(typeof(LogType), type));
-            eventCollectionView.Source = eventLog.Entries;
+            var entries = new EventLogEntry[eventLog.Entries.Count];
+            eventLog.Entries.CopyTo(entries, 0);
+            eventCollectionView.Source = entries.Reverse();
             RaisePropertyChanged(nameof(EventCollectionView));
         }
     }

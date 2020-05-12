@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
     public class StopServiceCommand : BaseCommand
     {
-        const int TIME_OUT_IN_MINUTE = 1;
-        private List<ServiceController> sorted = null;
+        private List<ServiceController> sorted = new List<ServiceController>();
         public StopServiceCommand(WindowsServiceViewModel vm) : base(vm)
         {
         }
@@ -22,15 +22,17 @@ namespace WindowsServiceManager.ViewModels.Commands
             ViewMode.ExceptionText = string.Empty;
             _ = Task.Factory.StartNew(() =>
              {
-                 foreach (var controller in Controllers)
+                 var ordered = DependencyOrder(Controllers.Select(c => c.Controller).ToArray());
+                 foreach (var controller in ordered)
                  {
                      if (controller.Status == ServiceControllerStatus.Running)
                      {
                          try
                          {
-                             if (controller.Controller.CanStop)
+                             if (controller.CanStop)
                              {
-                                 controller.Controller.Stop();
+                                 controller.Stop();
+                                 controller.WaitForStatus(ServiceControllerStatus.Stopped);
                              }
                          }
                          catch (Exception ex)
@@ -41,6 +43,20 @@ namespace WindowsServiceManager.ViewModels.Commands
                      }
                  }
              }, new CancellationToken(), TaskCreationOptions.None, TaskScheduler.Default);
+        }
+
+        private List<ServiceController> DependencyOrder(ServiceController[] controllers)
+        {
+            foreach (var controller in controllers)
+            {
+                if (controller.DependentServices.Length > 0)
+                {
+                    DependencyOrder(controller.DependentServices);
+                }
+                if (!sorted.Exists(c => c.ServiceName.ToUpper().Equals(controller.ServiceName.ToUpper())))
+                    sorted.Add(controller);
+            }
+            return sorted;
         }
     }
 }

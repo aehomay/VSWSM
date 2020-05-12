@@ -18,28 +18,30 @@ namespace WindowsServiceManager.ViewModels.Commands
 
         public override void Execute()
         {
-            var installer = new ServiceInstaller();
-            var Context = new InstallContext("/LogFile=uninstall.log", null);//TODO: support command arguments as well.
-            installer.Context = Context;
-            
-            var confirmation = MessageBox.Show("Are you sure you want to uninstall?", "Uninstall", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
-            if (confirmation)
+            using (ServiceInstaller installer = new ServiceInstaller())
             {
-                foreach (var controller in Controllers)
+                var context = new InstallContext("/LogFile=uninstall.log", null);//TODO: support command arguments as well.
+                installer.Context = context;
+
+                var confirmation = MessageBox.Show("Are you sure you want to uninstall?", "Uninstall", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                if (confirmation)
                 {
-                    try
+                    foreach (var controller in Controllers)
                     {
-                        installer.ServiceName = controller.ServiceName;
-                        installer.Uninstall(null);
-                        MessageBox.Show($"The {controller.ServiceName} service has unstalled successfully.");
+                        try
+                        {
+                            installer.ServiceName = controller.ServiceName;
+                            installer.Uninstall(null);
+                            MessageBox.Show($"The {controller.ServiceName} service has unstalled successfully.");
+                        }
+                        catch (Exception ex)
+                        {
+                            ViewMode.ExceptionText = $"Failed unstalling service {controller.ServiceName}. " +
+                                    $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        ViewMode.ExceptionText = $"Failed unstalling service {controller.ServiceName}. " +
-                                $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
-                    }
+                    ViewMode.RefreshServiceCommand.Execute(null);
                 }
-                ViewMode.RefreshServiceCommand.Execute(null);
             }
         }
     }

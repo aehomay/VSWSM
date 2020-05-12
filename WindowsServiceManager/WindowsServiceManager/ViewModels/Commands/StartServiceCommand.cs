@@ -29,6 +29,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                         {
                             controller.Controller.Start();
                         }
+                        Thread.Sleep(100);
                     }
                     catch (Exception ex)
                     {

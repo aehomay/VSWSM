@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration.Install;
+using System.IO;
 using System.Linq;
 using System.Security;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsServiceManager.Helper;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
@@ -19,31 +22,29 @@ namespace WindowsServiceManager.ViewModels.Commands
         public override void Execute()
         {
             var exeFilename = string.Empty;
+            string[] commandLineOptions = new string[1] { "/LogFile=install.log" };
+            IDictionary state = new Hashtable();
+
             try
             {
                 exeFilename = OpenFileDialog();
+                Environment.CurrentDirectory = Path.GetDirectoryName(exeFilename);
                 if (!string.IsNullOrEmpty(exeFilename))
                 {
-                    string[] commandLineOptions = new string[1] { "/LogFile=install.log" };
-                    var installer = new AssemblyInstaller(exeFilename, commandLineOptions)
+                    using (AssemblyInstaller installer = new AssemblyInstaller(exeFilename, commandLineOptions))
                     {
-                        UseNewContext = true
-                    };
-                    installer.Install(null);
-                    installer.Commit(null);
-                    MessageBox.Show($"The {exeFilename} has installed as a Windows service successfully.");
+                        installer.Install(state);
+                        installer.Commit(state);
+                        MessageBox.Show($"The {exeFilename} has installed as a Windows service successfully.");
+                    }
                 }
-            }
-            catch (SecurityException ex)
-            {
-                ViewMode.ExceptionText = $"Failed installing service {exeFilename}. " +
-                                $"Exception:{ex.Message}. This could be because of not running the visual studio under admin rights.";
             }
             catch (Exception ex)
             {
                 ViewMode.ExceptionText = $"Failed installing service {exeFilename}. " +
                                 $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
             }
+
             ViewMode.RefreshServiceCommand.Execute(null);
         }
 
@@ -53,7 +54,6 @@ namespace WindowsServiceManager.ViewModels.Commands
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.InitialDirectory = "c:\\";
                 openFileDialog.Filter = "txt files (*.exe)|*.exe";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;

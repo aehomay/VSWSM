@@ -23,7 +23,7 @@ namespace WindowsServiceManager.ViewModels.Commands
             ViewMode.ExceptionText = string.Empty;
             _ = Task.Factory.StartNew(() =>
             {
-                foreach (var controller in Controllers)
+                foreach (var controller in ServiceControllers)
                 {
                     if (controller.Status == ServiceControllerStatus.Running || controller.Status == ServiceControllerStatus.StartPending)
                     {

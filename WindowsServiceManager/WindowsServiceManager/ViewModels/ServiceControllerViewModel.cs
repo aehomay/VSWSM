@@ -16,25 +16,27 @@ namespace WindowsServiceManager.ViewModel
     /// </summary>
     public class ServiceControllerViewModel : ViewModelBase
     {
-        bool _visiable = false;
-        ServiceControllerStatus _status;
-        PauseTokenSource _pauseToken = new PauseTokenSource();
+        bool _Visiable = false;
+        ServiceControllerStatus _Status;
+        readonly PauseTokenSource _PauseToken = new PauseTokenSource();
         public ServiceControllerViewModel(ServiceController controller)
         {
             Controller = controller ?? throw new ArgumentNullException(paramName: nameof(controller));
-            _ = UpdateServiceStatusAsync(_pauseToken.Token, CancellationToken.None);
+            _ = UpdateServiceStatusAsync(_PauseToken.Token, CancellationToken.None);
         }
+
+        public TimeSpan UpdateResolution { get; set; } = TimeSpan.FromMilliseconds(500);
 
         public bool Visiable
         {
-            get => _visiable;
+            get => _Visiable;
             set
             {
                 if (value)
-                    _ = _pauseToken.ResumeAsync();
+                    _ = _PauseToken.ResumeAsync();
                 else
-                    _ = _pauseToken.PauseAsync();
-                _visiable = value;
+                    _ = _PauseToken.PauseAsync();
+                _Visiable = value;
             }
         }
 
@@ -58,7 +60,11 @@ namespace WindowsServiceManager.ViewModel
         /// </summary>
         public ServiceControllerStatus Status
         {
-            get => _status; set { Set(() => Status, ref _status, value); }
+            get => _Status; 
+            set 
+            {
+                Set(() => Status, ref _Status, value); 
+            }
         }
 
         public ServiceController Controller { get; } = null;
@@ -76,7 +82,7 @@ namespace WindowsServiceManager.ViewModel
                 await pause.PauseIfRequestedAsync();
                 Controller.Refresh();
                 Status = Controller.Status;
-                await Task.Delay(500);
+                await Task.Delay(UpdateResolution);
             }
         }
 

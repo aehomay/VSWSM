@@ -5,7 +5,8 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
@@ -19,21 +20,22 @@ namespace WindowsServiceManager.ViewModels.Commands
         public override void Execute()
         {
             ViewMode.ExceptionText = string.Empty;
-            foreach (var controller in Controllers)
+            foreach (var sc in ServiceControllers)
             {
                 _ = Task.Factory.StartNew(() =>
                 {
                     try
                     {
-                        if (controller.Status == ServiceControllerStatus.Stopped)
+                        if (sc.Status == ServiceControllerStatus.Stopped)
                         {
-                            controller.Controller.Start();
+                            sc.Controller.Start();
+                            sc.UpdateResolution = TimeSpan.FromSeconds(1);
                         }
-                        Thread.Sleep(100);
+                        Thread.Sleep(200);
                     }
                     catch (Exception ex)
                     {
-                        ViewMode.ExceptionText = $"Failed starting service {controller.ServiceName}. " +
+                        ViewMode.ExceptionText = $"Failed starting service {sc.ServiceName}. " +
                             $"Exception:{ex.Message}. InnerException:{ex.InnerException}";
                     }
                 }, new CancellationToken(), TaskCreationOptions.None, TaskScheduler.Default);

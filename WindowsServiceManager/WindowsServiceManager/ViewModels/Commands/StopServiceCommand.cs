@@ -22,7 +22,7 @@ namespace WindowsServiceManager.ViewModels.Commands
             ViewMode.ExceptionText = string.Empty;
             _ = Task.Factory.StartNew(() =>
              {
-                 var ordered = DependencyOrder(Controllers.Select(c => c.Controller).ToArray());
+                 var ordered = DependencyOrder(ServiceControllers.Select(c => c.Controller).ToArray());
                  foreach (var controller in ordered)
                  {
                      if (controller.Status == ServiceControllerStatus.Running)

@@ -51,8 +51,8 @@ namespace WindowsServiceManager.ViewModels
                 return new RelayCommand<object>(x => command.Execute(),
                 (x) =>
                 {
-                    return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Status == ServiceControllerStatus.Stopped);
+                    return command.ServiceControllers != null && command.ServiceControllers.Count > 0 &&
+               command.ServiceControllers.Any(c => c.Status == ServiceControllerStatus.Stopped);
                 });
             }
         }
@@ -65,8 +65,8 @@ namespace WindowsServiceManager.ViewModels
                 return new RelayCommand<object>(x => command.Execute(),
                 (x) =>
                 {
-                    return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Status == ServiceControllerStatus.Running);
+                    return command.ServiceControllers != null && command.ServiceControllers.Count > 0 &&
+               command.ServiceControllers.Any(c => c.Status == ServiceControllerStatus.Running);
                 });
             }
         }
@@ -79,8 +79,8 @@ namespace WindowsServiceManager.ViewModels
                 return new RelayCommand<object>(x => command.Execute(),
                 (x) =>
                 {
-                    return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Status != ServiceControllerStatus.Stopped);
+                    return command.ServiceControllers != null && command.ServiceControllers.Count > 0 &&
+               command.ServiceControllers.Any(c => c.Status != ServiceControllerStatus.Stopped);
                 });
             }
         }
@@ -93,8 +93,8 @@ namespace WindowsServiceManager.ViewModels
                 return new RelayCommand<object>(x => command.Execute(),
                 (x) =>
                 {
-                    return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Status == ServiceControllerStatus.Running || c.Status == ServiceControllerStatus.Stopped);
+                    return command.ServiceControllers != null && command.ServiceControllers.Count > 0 &&
+               command.ServiceControllers.Any(c => c.Status == ServiceControllerStatus.Running || c.Status == ServiceControllerStatus.Stopped);
                 });
             }
         }
@@ -107,8 +107,8 @@ namespace WindowsServiceManager.ViewModels
                 return new RelayCommand<object>(x => command.Execute(),
                 (x) =>
                 {
-                    return command.Controllers != null && command.Controllers.Count > 0 &&
-               command.Controllers.Any(c => c.Status == ServiceControllerStatus.Running);
+                    return command.ServiceControllers != null && command.ServiceControllers.Count > 0 &&
+               command.ServiceControllers.Any(c => c.Status == ServiceControllerStatus.Running);
                 });
             }
         }

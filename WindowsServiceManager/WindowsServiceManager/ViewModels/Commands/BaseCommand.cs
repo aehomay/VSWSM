@@ -12,7 +12,7 @@ namespace WindowsServiceManager.ViewModels.Commands
     {
         protected readonly WindowsServiceViewModel ViewMode;
 
-        public List<ServiceControllerViewModel> Controllers
+        public List<ServiceControllerViewModel> ServiceControllers
         {
             get
             {

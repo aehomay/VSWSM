@@ -26,7 +26,7 @@ namespace WindowsServiceManager.ViewModels.Commands
                 var confirmation = MessageBox.Show("Are you sure you want to uninstall?", "Uninstall", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
                 if (confirmation)
                 {
-                    foreach (var controller in Controllers)
+                    foreach (var controller in ServiceControllers)
                     {
                         try
                         {

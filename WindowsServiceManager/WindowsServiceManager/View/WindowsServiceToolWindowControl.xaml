@@ -45,7 +45,6 @@
                       ScrollViewer.CanContentScroll="True"
                       ScrollViewer.PanningMode="Both"
                       SelectionChanged="ServiceListView_SelectionChanged">
-
                 <ListView.Resources>
                     <ContextMenu x:Key="ItemContextMenu">
                         <MenuItem Header="Start" Command="{Binding Path=DataContext.StartServiceCommand, 
@@ -71,7 +70,6 @@
                         <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                     </Style>
                 </ListView.ItemContainerStyle>
-
                 <ListView.View>
                     <GridView x:Name="ServiceGridView" AllowsColumnReorder="True" ColumnHeaderToolTip="Windows Service Information">
                         <GridViewColumn DisplayMemberBinding="{Binding Path=ServiceName}" Header="Service Name"/>

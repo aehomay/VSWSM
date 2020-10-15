@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.ServiceProcess;
 using System.Windows.Forms.VisualStyles;
 
 namespace WindowsServiceManager.Helper
@@ -26,6 +27,20 @@ namespace WindowsServiceManager.Helper
             return null;
         }
 
+        public static List<ServiceController> DependencyOrder(ServiceController[] controllers)
+        {
+            var sorted = new List<ServiceController>();
+            foreach (var controller in controllers)
+            {
+                if (controller.DependentServices.Length > 0)
+                {
+                    DependencyOrder(controller.DependentServices);
+                }
+                if (!sorted.Exists(c => c.ServiceName.ToUpper().Equals(controller.ServiceName.ToUpper())))
+                    sorted.Add(controller);
+            }
+            return sorted;
+        }
         public static IEnumerable<VisualStudioProcess> GetVisualStudioProcesses()
         {
             var processes = Process.GetProcesses().Where(o => o.ProcessName.Contains("devenv"));

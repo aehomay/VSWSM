@@ -64,6 +64,7 @@
     <Compile Include="ViewModels\Behaviours\MouseBehaviour.cs" />
     <Compile Include="ViewModels\Commands\BaseCommand.cs" />
     <Compile Include="ViewModels\Commands\InstallServiceCommand.cs" />
+    <Compile Include="ViewModels\Commands\RestartServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\StartServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\AttachToServiceCommand.cs" />
     <Compile Include="ViewModels\Commands\TerminateServiceCommand.cs" />
@@ -101,8 +102,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
-    <Content Include="Resources\WindowsServiceToolWindowCommand.png" />
     <Content Include="Resources\WindowsServiceToolWindowPackage.ico" />
+    <Content Include="Resources\wsm.ico" />
     <Content Include="stylesheet.css" />
     <VSCTCompile Include="WindowsServiceToolWindowPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,9 +7,10 @@ using WindowsServiceManager.Helper;
 
 namespace WindowsServiceManager.ViewModels.Commands
 {
-    public class TerminateServiceCommand : BaseCommand
+    public class RestartServiceCommand : BaseCommand
     {
-        public TerminateServiceCommand(WindowsServiceViewModel vm) : base(vm)
+
+        public RestartServiceCommand(WindowsServiceViewModel vm) : base(vm)
         {
         }
 
@@ -17,14 +19,19 @@ namespace WindowsServiceManager.ViewModels.Commands
             ViewMode.ExceptionText = string.Empty;
             _ = Task.Factory.StartNew(() =>
             {
-                foreach (var controller in ServiceControllers)
+                var ordered = Utility.DependencyOrder(ServiceControllers.Select(c => c.Controller).ToArray());
+                foreach (var controller in ordered)
                 {
-                    if (controller.Status == ServiceControllerStatus.Running || controller.Status == ServiceControllerStatus.StartPending)
+                    if (controller.Status == ServiceControllerStatus.Running)
                     {
                         try
                         {
-                            TerminateServiceByProcess(controller.ServiceName);
-                            Thread.Sleep(500);
+                            if (controller.CanStop)
+                            {
+                                controller.Stop();
+                                controller.WaitForStatus(ServiceControllerStatus.Stopped);
+                                controller.Start();
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -35,11 +42,5 @@ namespace WindowsServiceManager.ViewModels.Commands
                 }
             }, new CancellationToken(), TaskCreationOptions.None, TaskScheduler.Default);
         }
-
-        private void TerminateServiceByProcess(string serviceName)
-        {
-            Utility.GetProcessByServiceName(serviceName)?.Kill();
-        }
-
     }
 }

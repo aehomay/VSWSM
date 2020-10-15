@@ -16,7 +16,7 @@ using WindowsServiceManager.ViewModels.Commands;
 
 namespace WindowsServiceManager.ViewModels
 {
-    public class WindowsServiceViewModel : ViewModelBase
+    public class WindowsServicePanelViewModel : ViewModelBase
     {
         private string _WatermarkText = null;
         private string _filterText = string.Empty;
@@ -75,12 +75,12 @@ namespace WindowsServiceManager.ViewModels
         {
             get
             {
-                var command = new RestartServiceCommand(this);
-                return new RelayCommand<object>(x => command.Execute(),
+                var stop = new StopServiceCommand(this);
+                return new RelayCommand<object>(x => stop.Execute(),
                 (x) =>
                 {
-                    return command.ServiceControllers != null && command.ServiceControllers.Count > 0 &&
-              command.ServiceControllers.Any(c => c.Status == ServiceControllerStatus.Running);
+                    return stop.ServiceControllers != null && stop.ServiceControllers.Count > 0 &&
+                    stop.ServiceControllers.Any(c => c.Status == ServiceControllerStatus.Running);
                 });
             }
         }
@@ -189,11 +189,11 @@ namespace WindowsServiceManager.ViewModels
             get => _exceptionText;
             set
             {
-                Set(() => ExceptionText, ref _exceptionText, value);
+                Set(() => ExceptionText, ref _exceptionText, value + '\n');
             }
         }
 
-        public WindowsServiceViewModel()
+        public WindowsServicePanelViewModel()
         {
             WatermarkText = "Enter service name to search!";
             FilteredItems = new List<ServiceControllerViewModel>();
@@ -222,7 +222,7 @@ namespace WindowsServiceManager.ViewModels
                 if (FilteredItems.Exists(i => i.ServiceName.ToUpper().Equals(controller.ServiceName.ToUpper())))
                     FilteredItems.Remove(controller);
             }
-             controller.Visiable = e.Accepted;
+            controller.Visiable = e.Accepted;
         }
 
         private void BindWindowsServices()

@@ -51,6 +51,8 @@
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                         <MenuItem Header="Stop" Command="{Binding Path=DataContext.StopServiceCommand, 
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
+                        <MenuItem Header="Restart" Command="{Binding Path=DataContext.RestartServiceCommand, 
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                         <MenuItem Header="Terminate" Command="{Binding Path=DataContext.KillServiceCommand, 
                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" Background="WhiteSmoke"/>
                         <MenuItem Header="Install" Command="{Binding Path=DataContext.InstallServiceCommand, 

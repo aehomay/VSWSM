@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WindowsServiceManager.ViewModels.WindowsServiceViewModel" Collapsed="true">
+    <Position X="11.75" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAYACogAAAEBAgICAAABQQEAAAAAKAQAEAAAAAE=</HashCode>
+      <FileName>ViewModels\WindowsServiceViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModel.ServiceControllerViewModel" Collapsed="true">
+    <Position X="11.75" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAIECAEAQSAAARAAAAAAAAAAAAAAAAAACAAAAAABAA=</HashCode>
+      <FileName>ViewModels\ServiceControllerViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.RelayCommand&lt;T&gt;" Collapsed="true">
+    <Position X="8.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.EventViewModel" Collapsed="true">
+    <Position X="11.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAIACRACAABAAAAAAACAAAAAAAAAAAAIAACAAAAAAA=</HashCode>
+      <FileName>ViewModels\EventViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.AttachToServiceCommand" Collapsed="true">
+    <Position X="6.25" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Commands\AttachToServiceCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.BaseCommand" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAASAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Commands\BaseCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.InstallServiceCommand" Collapsed="true">
+    <Position X="1.25" Y="4" Width="2" />
+    <InheritanceLine Type="WindowsServiceManager.ViewModels.Commands.BaseCommand" ManuallyRouted="true">
+      <Path>
+        <Point X="5" Y="1.062" />
+        <Point X="5" Y="2.305" />
+        <Point X="2.25" Y="2.305" />
+        <Point X="2.25" Y="4" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Commands\InstallServiceCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.StartServiceCommand" Collapsed="true">
+    <Position X="2.5" Y="3" Width="2.25" />
+    <InheritanceLine Type="WindowsServiceManager.ViewModels.Commands.BaseCommand" ManuallyRouted="true">
+      <Path>
+        <Point X="5" Y="1.062" />
+        <Point X="5" Y="2.304" />
+        <Point X="3.625" Y="2.304" />
+        <Point X="3.625" Y="3" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Commands\StartServiceCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.StopServiceCommand" Collapsed="true">
+    <Position X="1.75" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAQAAAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Commands\StopServiceCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.TerminateServiceCommand" Collapsed="true">
+    <Position X="5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>ViewModels\Commands\TerminateServiceCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Commands.UninstallServiceCommand" Collapsed="true">
+    <Position X="6.75" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Commands\UninstallServiceCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindowsServiceManager.ViewModels.Behaviours.MouseBehaviour" Collapsed="true">
+    <Position X="11.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAgEAgeAAAgAARQAQBgIQYCCAQAwACAIgMEMACAAGSQ=</HashCode>
+      <FileName>ViewModels\Behaviours\MouseBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="WindowsServiceManager.ViewModels.LogType" Collapsed="true">
+    <Position X="11.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACJAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>ViewModels\EventViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
